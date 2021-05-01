@@ -26,32 +26,39 @@ export class CdkStarterStack extends cdk.Stack {
       },
     });
 
+    // 👇 create an Output for the API URL
+    new cdk.CfnOutput(this, 'apiUrl', {value: api.url});
+
     // 👇 define get todos function
     const getTodosLambda = new lambda.Function(this, 'get-todos-lambda', {
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'index.main',
       code: lambda.Code.fromAsset(path.join(__dirname, '/../src/get-todos')),
     });
-    // 👇 add a resource with a GET method
+
+    // 👇 add a /todos resource
     const todos = api.root.addResource('todos');
+
+    // 👇 integrate GET /todos with getTodosLambda
     todos.addMethod(
       'GET',
       new apigateway.LambdaIntegration(getTodosLambda, {proxy: true}),
     );
 
+    // 👇 define delete todo function
     const deleteTodoLambda = new lambda.Function(this, 'delete-todo-lambda', {
       runtime: lambda.Runtime.NODEJS_14_X,
       handler: 'index.main',
       code: lambda.Code.fromAsset(path.join(__dirname, '/../src/delete-todo')),
     });
-    // 👇 add a resource at /todos/{todoId} with a DELETE method
+
+    // 👇 add a /todos/{todoId} resource
     const todo = todos.addResource('{todoId}');
+
+    // 👇 integrate DELETE /todos/{todoId} with deleteTodosLambda
     todo.addMethod(
       'DELETE',
-      new apigateway.LambdaIntegration(deleteTodoLambda, {proxy: true}),
+      new apigateway.LambdaIntegration(deleteTodoLambda),
     );
-
-    // 👇 create an Output for the API URL
-    new cdk.CfnOutput(this, 'apiUrl', {value: api.url});
   }
 }
