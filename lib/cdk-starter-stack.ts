@@ -31,7 +31,7 @@ export class CdkStarterStack extends cdk.Stack {
 
     // 👇 define get todos function
     const getTodosLambda = new lambda.Function(this, 'get-todos-lambda', {
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       handler: 'index.main',
       code: lambda.Code.fromAsset(path.join(__dirname, '/../src/get-todos')),
     });
@@ -47,7 +47,7 @@ export class CdkStarterStack extends cdk.Stack {
 
     // 👇 define delete todo function
     const deleteTodoLambda = new lambda.Function(this, 'delete-todo-lambda', {
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       handler: 'index.main',
       code: lambda.Code.fromAsset(path.join(__dirname, '/../src/delete-todo')),
     });
